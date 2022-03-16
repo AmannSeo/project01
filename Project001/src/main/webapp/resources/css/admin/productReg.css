@@ -1,0 +1,25 @@
+@charset "UTF-8";
+.warn_productName {
+  display: none;
+  color: red;
+}
+.warn_productName {
+  display: none;
+  color: red;
+}
+.warn_category {
+  display: none;
+  color: red;
+}
+.warn_price {
+  display: none;
+  color: red;
+}
+.warn_amount {
+  display: none;
+  color: red;
+}
+.warn_proIntro {
+  display: none;
+  color: red;
+}

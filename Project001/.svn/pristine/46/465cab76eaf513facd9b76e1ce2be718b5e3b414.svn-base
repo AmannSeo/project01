@@ -1,0 +1,53 @@
+package edu.spring.p01.persistence;
+
+import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import edu.spring.p01.domain.MemberVO;
+
+@Repository
+public class MemberDAOImple implements MemberDAO{
+	private static final Logger logger =
+			LoggerFactory.getLogger(MemberDAOImple.class);
+	private static final String NAMESPACE =
+			"edu.spring.p01.MemberMapper";
+	
+	@Autowired
+	public SqlSession sqlSession;
+
+	@Override
+	public int insert(MemberVO vo) {
+		logger.info("insert() Call" + vo.toString());
+		return sqlSession.insert(NAMESPACE + ".insert", vo);
+	}
+
+	@Override
+	public MemberVO select(String memberId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int update(MemberVO vo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int delete(String memberId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int idCheck(String memberId) throws Exception{
+		logger.info("idCheck() Call" + memberId);
+		return sqlSession.selectOne(NAMESPACE + ".idCheck", memberId);
+	}
+
+	
+	
+}

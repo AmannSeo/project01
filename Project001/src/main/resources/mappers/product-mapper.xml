@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.spring.p01.ProductMapper">
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="AND">
+					<choose>
+						
+						<when test="type == 'C'.toString()">
+							cate_code like '%' || #{cateCode} || '%'
+						</when>
+						<when test="type == 'N'.toString()">
+							product_name like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+		</trim>
+	</sql>
+	
+	<!-- 상품 검색(상품명) -->
+	<select id="getProductList" resultType="productVO">
+	
+		<![CDATA[
+		    select * from(
+		        select /*+INDEX_DESC(pro01_product PROJECT01_PRODUCET_PK) */ rownum as rn, product_no, product_name, 
+		            (select cate_name from pro01_category where pro01_product.cate_code = pro01_category.cate_code) cate_name,cate_code, product_price, product_amount, product_intro, product_reg_date, product_img  
+		        from pro01_product
+		        where 
+		        
+        ]]>
+	    
+	    <include refid="criteria"></include>
+	    
+	    <![CDATA[
+	    		        
+		        rownum <= #{page} * #{numsPerPage} 
+	        	)
+	        where rn > (#{page} -1) * #{numsPerPage}
+		]]>	  		
+	
+	</select>
+	
+	
+	
+	<!-- 상품 총 개수 -->
+	<select id="productGetTotal" resultType="Integer">
+	
+		select count(*) from pro01_product
+		where
+		<include refid="criteria"></include> 
+		product_no >0
+		
+	</select>
+	
+	<!-- 카테고리별 상품 리스트 -->
+	<select id="cateProList" resultType="ProductVO">
+		p.product_no, p.*
+	    from pro01_product p
+	        inner join pro01_category c
+	            on p.cate_code = c.cate_code
+	        where p.cate_code = #{cate_code};
+	</select>
+	
+	<!-- 상품 정보 -->
+	<select id="getProductInfo" resultType="ProductVO">
+		select a.*
+		from pro01_product a 
+			left outer join pro01_category b on a.cate_code = b.cate_code
+		where product_no =  ${productNo};
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
