@@ -56,6 +56,33 @@
   background-color: red !important;
   border-color: red !important;
 }
+#result_card img{
+    max-width: 100%;
+      height: auto;
+      display: block;
+      padding: 5px;
+      margin-top: 10px;
+      margin: auto; 
+  }
+  #result_card {
+    position: relative;
+  }
+  .imgDeleteBtn{
+      position: absolute;
+      top: 0;
+      right: 5%;
+      background-color: #ef7d7d;
+      color: wheat;
+      font-weight: 900;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      line-height: 26px;
+      text-align: center;
+      border: none;
+      display: block;
+      cursor: pointer;  
+}
     </style>
     
 <title>상품 등록</title>
@@ -79,16 +106,26 @@
           <hr>
           
           
-          <!-- <div class="inputArea">
-           <label for="product_img">이미지</label>
-           <input type="file" id="product_img" name="file" />
-           <div class="select_img"><img src="" /></div>
-          </div> -->
-          
+          <!-- 이미지 업로드 영역 -->
+       <!-- 
           <div class="form_sectioin_img">
             <input type="file" multiple id="fileItem" name='uploadFile' style="height: 30px;">
           </div>
-          
+ -->
+          <div class="form_sectioin_img">
+            <div class="form_section_title">
+               <label>상품 이미지</label>
+            </div> 
+            <div class="form_section_content">
+              <input type="file" multiple id="fileItem" name='uploadFile' style="height: 30px">
+              <div id="uploadResult"> 
+                <!-- <div id="result_card">
+                  <div class="imgDeleteBtn">x</div>
+                  <img src="/resources/imgs/logo_blk.png">
+                </div> -->
+              </div>
+            </div>
+          </div>
           
           <div class="form_section_pname">
             <div class="col-12 form_section_title">
@@ -358,9 +395,102 @@
 	
    /* 이미지 업로드 */
    $("input[type='file']").on("change", function(e){
-       alert("동작");
+       
+       let formData = new FormData(); // 첨부 파일을 서버로 전송하기 위한 코드
+       let fileInput = $('input[name="uploadFile"]');
+       let fileList = fileInput[0].files; // FileList 객체에 접근
+       let fileObj = fileList[0]; // fileList 객체가 맞는지 확인
+       
+       /* console.log("fileList : " + fileList);
+       console.log("fileObj : " + fileObj);
+       
+       console.log("fileName : " + fileObj.name);
+	   console.log("fileSize : " + fileObj.size);
+	   console.log("fileType(MimeType) : " + fileObj.type); */
+	   
+	   if(!fileCheck(fileObj.name, fileObj.size)) {
+	       return false;
+	   }
+	   
+	   /* formData.append("uploadFile", fileObj); */ // forDate 객체에 데이터를 추가하는 방법
+	   
+	   /* formData객체에 여러 개의 파일을 선택 */
+	   for(let i = 0; i < fileList.length; i++) {
+	       formData.append("uploadFile", fileList[i]);
+	   }
+	   
+	   $.ajax({
+			url: '/admin/uploadAjaxAction',
+	    	processData : false,
+	    	contentType : false,
+	    	data : formData,
+	    	type : 'POST',
+	    	dataType : 'json',
+	    	success : function(result){
+	    		console.log(result);
+	    		showUploadImage(result);
+	    	},
+	    	error : function(result) {
+	    	    alert("이미지 파일이 아닙니다.");
+	    	}
+		});	
+	   
+	   /* 
+	   url : 서버로 요청을 보낼 url
+	   processData : 서버로 전송할 데이터를 queryStirng 형태로 변환할지 여부
+	   contentType : 서버로 전송되는 데이터의 content-type
+	   data : 서버로 전송할 데이터
+	   type : 서보 요청 타입(GET, POST)
+	   dataType : 서버로부터 반환받을 데이터 타입
+	    */
+       
    });
+   
+   /* 파일 체크 */
+   /* var, method related with attachFile */
+   let regex = new RegExp("(.*?)\.(jpg|jpeg|png)$");
+   let maxSize = 1048576; //1MB
+   
+   function fileCheck(fileName, fileSize) {
+       
+       if(fileSize >= maxSize) {
+           alert("파일 사이즈 초과");
+           return false;
+       }
+       
+       if(!regex.test(fileName)) {
+           alert("해당 종류의 파일은 업로드할 수 없습니다.");
+           return false;
+       }
+       
+       return true;
+   }
 	 
+   /* 이미지 출력 */
+	function showUploadImage(uploadResultArr){
+		
+		/* 전달받은 데이터 검증 */
+		if(!uploadResultArr || uploadResultArr.length == 0){return}
+		
+		let uploadResult = $("#uploadResult");
+		
+		let obj = uploadResultArr[0];
+		
+		let str = "";
+		
+		// replace 적용 => 동작 o
+		let fileCallPath = encodeURIComponent(obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName);
+		// replace 적용 x => 동작 o
+//		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+		
+		str += "<div id='result_card'>";
+		str += "<img src='/product/display?fileName=" + fileCallPath +"'>";
+		str += "<div class='imgDeleteBtn'>x</div>";
+		str += "</div>";		
+		
+  		uploadResult.append(str);     
+       
+	}	
 
   </script>
   
