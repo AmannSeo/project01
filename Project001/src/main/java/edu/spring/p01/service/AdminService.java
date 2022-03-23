@@ -9,7 +9,7 @@ import edu.spring.p01.pageutil.PageCriteria;
 public interface AdminService {
 
 	// 상품 등록
-	int insert(ProductVO product) throws Exception;
+	void insert(ProductVO product);
 	
 	// 상품 전체보기
 	List<ProductVO> readAll(PageCriteria criteria);

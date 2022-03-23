@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import edu.spring.p01.domain.AttachImageVO;
 import edu.spring.p01.domain.CateVO;
 import edu.spring.p01.domain.ProductVO;
 import edu.spring.p01.pageutil.PageCriteria;
@@ -78,8 +79,6 @@ public class AdminDAOImple implements AdminDAO{
 	}
 	
 	
-
-
 	// 상품명 선택
 //	@Override
 //	public List<ProductVO> select(String productName) {
@@ -101,6 +100,13 @@ public class AdminDAOImple implements AdminDAO{
 	public List<CateVO> cateList() {
 		logger.info("cateList() Call");
 		return sqlSession.selectList(NAMESPACE + ".cateList");
+	}
+
+	// 이미지 등록
+	@Override
+	public int imageEnroll(AttachImageVO vo) {
+		logger.info("imageEnroll() Call..................");
+		return sqlSession.insert(NAMESPACE + ".imageEnroll", vo);
 	}
 
 	

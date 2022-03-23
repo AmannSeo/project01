@@ -12,13 +12,13 @@ public class AttachImageVO {
 	
 	/* 상품 No */
 	private int productNo;
-
+	
+	public AttachImageVO() {
+		super();
+	}
+	
 	public String getUploadPath() {
 		return uploadPath;
-	}
-
-	public void setUploadPath(String uploadPath) {
-		this.uploadPath = uploadPath;
 	}
 
 	public String getUuid() {
@@ -45,15 +45,21 @@ public class AttachImageVO {
 		this.productNo = productNo;
 	}
 
+	public void setUploadPath(String uploadPath) {
+		this.uploadPath = uploadPath;
+	}
+
 	@Override
 	public String toString() {
 		return "AttachImageVO [uploadPath=" + uploadPath + ", uuid=" + uuid + ", fileName=" + fileName + ", productNo="
 				+ productNo + "]";
 	}
+
+	
 	
 	
 	
 	
 
-
+	
 }

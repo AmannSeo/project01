@@ -53,7 +53,6 @@
             <tbody>
               <c:forEach var="list" items="${list }">
                 <tr>
-                  <td><img width="100%" height="110px" src="../resources${list.productImg }"></td>
                   <td><c:out value="${list.productNo }"></c:out></td>
                   <td><a href="productDetail?productNo=${list.productNo }"><c:out value="${list.productName }"></c:out></a></td>
                   <td><c:out value="${list.cateCode }"></c:out></td>

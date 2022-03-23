@@ -396,6 +396,11 @@
    /* 이미지 업로드 */
    $("input[type='file']").on("change", function(e){
        
+       /* 이미지 존재시 삭제 */
+       if($(".imgDeleteBtn").length > 0){
+           deleteFile();
+       }
+       
        let formData = new FormData(); // 첨부 파일을 서버로 전송하기 위한 코드
        let fileInput = $('input[name="uploadFile"]');
        let fileList = fileInput[0].files; // FileList 객체에 접근
@@ -485,12 +490,59 @@
 		
 		str += "<div id='result_card'>";
 		str += "<img src='/product/display?fileName=" + fileCallPath +"'>";
-		str += "<div class='imgDeleteBtn'>x</div>";
+		str += "<div class='imgDeleteBtn' data-file='" + fileCallPath + "'>x</div>";
+		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";		
 		str += "</div>";		
 		
   		uploadResult.append(str);     
        
 	}	
+     
+     /* 이미지 삭제 버튼 동작 */
+ 	$("#uploadResult").on("click", ".imgDeleteBtn", function(e){
+ 		
+ 		deleteFile();
+ 		
+ 	});
+   
+   
+   /* 파일 삭제 메서드 */
+   /* 파일 삭제 요청하는 ajax */
+       
+   // url : 이전 포스팅에서 작성한 파일 삭제를 수행하는 url을 작성
+   // data : 객체 초기자를 활용하여 fileName 속성명에 targetFile(이미지 파일 경로) 속성 값을 부여함
+   // 		서버의 메서드 파라미터에 String fileName을 선언하였기 때문에 스프링에서 해당 데이터를 매핑해 줌
+   // type : 서버의 요청 방식 'POST'
+   // dataType : 전송하는 targetFile은 문자 데이터이기 때문에 'text'를 지정해주었음
+   // sucess : 성공할 경우 실행되는 속성
+   // error : 요청이 실패 혹은 에러일 경우 실행되는 속성
+   function deleteFile(){
+       
+       let targetFile = $(".imgDeleteBtn").data("file");
+		
+	   let targetDiv = $("#result_card");
+       
+       
+       $.ajax({
+          url : '/admin/deleteFile',
+          data : {fileName : targetFile},
+          dataType : 'text',
+          type : 'POST',
+          success : function(result){
+              console.log(result);
+              
+              targetDiv.remove();
+              $("input[type='file']").val("");
+          },
+          error : function(result){
+              console.log(result);
+              
+              alert("파일을 삭제하지 못하였습니다.")
+          }
+       });
+   }
 
   </script>
   

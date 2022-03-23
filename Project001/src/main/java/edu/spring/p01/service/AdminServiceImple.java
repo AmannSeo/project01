@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.spring.p01.domain.CateVO;
 import edu.spring.p01.domain.ProductVO;
@@ -22,10 +23,20 @@ public class AdminServiceImple implements AdminService{
 	private AdminDAO adminDao;
 
 	// 상품 등록
+	@Transactional
 	@Override
-	public int insert(ProductVO product) throws Exception {
+	public void insert(ProductVO product) {
 		logger.info("insert product : " + product.toString());
-		return adminDao.insert(product);
+		adminDao.insert(product);
+		
+		if(product.getImageList() == null || product.getImageList().size() <= 0) {
+			return;
+		}
+		
+		product.getImageList().forEach(attach ->{
+			attach.setProductNo(product.getProductNo());
+			adminDao.imageEnroll(attach);
+		});
 	}
 
 	// 상품 전체 읽기

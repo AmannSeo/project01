@@ -6,9 +6,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- DAOImple의 순서와 메소드 이름이 비슷하게 생성 꼭 인지 -->
 	
 	<!-- 상품 등록 -->
+	<!-- 
+	insert문이 실행되기 전에 <selectkey> 태그 내의; 쿼리문이 실행되고,
+	쿼리 문의 결과 값이 keyProperty 속성 값으로 지정한 'productNo(ProductVO 멤버변수)에
+	resultType 속성 값으로 지정한 int 타입으로 반환한다는 의미
+	 -->
+	 <!-- 
+	 주의 사항 : 이미지 업로드 selectKey 참고
+	  -->
 	<insert id="insert">
-		insert into ${pro01_product} (${productName}, ${cateCode}, ${productPrice}, ${productAmount}, ${productIntro}, ${productImg})
-			values (#{productName}, #{cateCode}, #{productPrice}, #{productAmount}, #{productIntro}, #{productImg})
+	
+		<selectKey resultType="int" keyProperty="productNo" order="AFTER">
+			SELECT pro01_product_seq.currval from dual
+		</selectKey>
+	
+		insert into ${pro01_product} (${productName}, ${cateCode}, ${productPrice}, ${productAmount}, ${productIntro})
+			values (#{productName}, #{cateCode}, #{productPrice}, #{productAmount}, #{productIntro})
 	</insert>
 	
 	<!-- 상품 전체 읽기 -->
@@ -35,7 +48,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			${productPrice} = #{productPrice},
 			${productAmount} = #{productAmount},
 			${productIntro} = #{productIntro},
-			${productImg} = #{productImg}
 		where ${productNo} = #{productNo}
 	</update>
 	
@@ -45,6 +57,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where ${productNo} = #{productNo}
 	</delete>
 	
+	<!-- 이미지 등록 -->
+	<insert id="imageEnroll">
+		insert into pro01_image(product_no, fileName, uploadPath, uuid) values (#{productNo}, #{fileName}, #{uploadPath}, #{uuid})
+	</insert>
 	
 	<!-- 상품 리스트 불러오기 -->
 	<select id="product_select_all" resultType="productVO">  
@@ -52,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	          select * from (
 	            select /*+INDEX_DESC(pro01_product PROJECT01_PRODUCET_PK) */ 
 	                  rownum as rn, product_no, product_name, 
-	                  (select cate_name from pro01_category where pro01_product.cate_code = pro01_category.cate_code) cate_name, product_price, product_amount, product_intro, product_reg_date, product_img
+	                  (select cate_name from pro01_category where pro01_product.cate_code = pro01_category.cate_code) cate_name, product_price, product_amount, product_intro, product_reg_date, product_mod_date
 	            from pro01_product 
 	            where
 	    ]]>         

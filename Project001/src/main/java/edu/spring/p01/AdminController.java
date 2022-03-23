@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -226,38 +227,55 @@ public class AdminController {
 		return result;
 
 	}
+	
+	/* 이미지 파일 삭제 */
+	@PostMapping("/deleteFile")
+	public ResponseEntity<String> deleteFile(String fileName) {
+		logger.info("deleteFile() Call..............");
+		
+		File file = null;
+		
+		try {
+			
+			/* 썸네일 파일 삭제 */
+			file = new File("c:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
+			
+			file.delete();
+			
+			/* 원본 파일 삭제 */
+			String originFileName = file.getAbsolutePath().replace("s_", "");
+			
+			logger.info("originFileName : " + originFileName);
+			
+			file = new File(originFileName);
+			
+			file.delete();
+			
+					
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			return new ResponseEntity<String>("fail", HttpStatus.NOT_IMPLEMENTED);
+		}
+		
+		return new ResponseEntity<String>("success", HttpStatus.OK);
+	}
 
 	// 상품 등록
 	@PostMapping(value = "/productReg")
-	public String productRegPOST(ProductVO product, RedirectAttributes reAttr, MultipartFile file) throws Exception {
+	public String productRegPOST(ProductVO product, RedirectAttributes reAttr) throws Exception{
 		// RedirectAttributes
 		// - 재경로 위치에 속성값을 전송하는 객체
-		logger.info("productRegPOST() Call");
+		logger.info("productRegPOST() Call................." + product);
 		logger.info("product : " + product.toString());
 
-		/*
-		 * //파일 업로드 관련 start String imgUploadPath = uploadPath + File.separator +
-		 * "imgUpload"; String ymdPath = UploadFileUtils.calcPath(imgUploadPath); String
-		 * fileName = null; logger.info("imgUploadPath() Call");
-		 * if(file.getOriginalFilename() != null && file.getOriginalFilename() != "") {
-		 * fileName = UploadFileUtils.fileUpload(imgUploadPath,
-		 * file.getOriginalFilename(), file.getBytes(), ymdPath); } else { fileName =
-		 * uploadPath + File.separator + "images" + File.separator + "none.png"; }
-		 * product.setProductImg(File.separator + "imgUpload" + ymdPath + File.separator
-		 * + fileName); //파일 업로드 관련 end
-		 */
-		int result = adminService.insert(product);
+		adminService.insert(product);
+		
+		reAttr.addFlashAttribute("product_result", product.getProductName());
+		
+		return "redirect:/admin/productList";
 
-		logger.info(result + "상품 등록");
-		if (result == 1) {
-			logger.info("상품 등록 성공");
-			reAttr.addFlashAttribute("insert_result", product.getProductName());
-			return "redirect:/admin/productList";
-		} else {
-			logger.info("상품 등록 실패");
-			reAttr.addFlashAttribute("insert_result", product.getProductName());
-			return "redirect:/admin/productReg";
-		}
 	}
 
 	// 상품 목록 페이지 이동
@@ -326,24 +344,24 @@ public class AdminController {
 		logger.info("productUpdatePOST() Call");
 		logger.info("(Post)product No : " + product);
 
-		// 새로운 파일이 등록되었는지 확인
-		if (file.getOriginalFilename() != null && file.getOriginalFilename() != "") {
-			// 기존 파일을 삭제
-			new File(uploadPath + req.getParameter("productImg")).delete();
-
-			// 새로 첨부한 파일을 등록
-			String imgUploadPath = uploadPath + File.separator + "imgUpload";
-			String ymdPath = UploadFileUtils.calcPath(imgUploadPath);
-			String fileName = UploadFileUtils.fileUpload(imgUploadPath, file.getOriginalFilename(), file.getBytes(),
-					ymdPath);
-
-			product.setProductImg(File.separator + "imgUpload" + ymdPath + File.separator + fileName);
-
-		} else { // 새로운 파일이 등록되지 않았다면
-			// 기존 이미지를 그대로 사용
-			product.setProductImg(req.getParameter("productImg"));
-
-		}
+		/*
+		 * // 새로운 파일이 등록되었는지 확인 if (file.getOriginalFilename() != null &&
+		 * file.getOriginalFilename() != "") { // 기존 파일을 삭제 new File(uploadPath +
+		 * req.getParameter("productImg")).delete();
+		 * 
+		 * // 새로 첨부한 파일을 등록 String imgUploadPath = uploadPath + File.separator +
+		 * "imgUpload"; String ymdPath = UploadFileUtils.calcPath(imgUploadPath); String
+		 * fileName = UploadFileUtils.fileUpload(imgUploadPath,
+		 * file.getOriginalFilename(), file.getBytes(), ymdPath);
+		 * 
+		 * product.setProductImg(File.separator + "imgUpload" + ymdPath + File.separator
+		 * + fileName);
+		 * 
+		 * } else { // 새로운 파일이 등록되지 않았다면 // 기존 이미지를 그대로 사용
+		 * product.setProductImg(req.getParameter("productImg"));
+		 * 
+		 * }
+		 */
 
 		int result = adminService.update(product);
 		if (result == 1) {
