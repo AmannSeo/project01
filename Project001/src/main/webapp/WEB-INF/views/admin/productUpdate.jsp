@@ -32,54 +32,6 @@
 <!-- content -->
 <div class="content" style="display: flex;">
   <%@include file="../includes/admin/admin_menu.jsp" %>
-  
-  <%-- <div class="wrapper">
-    <div class="wrap">
-      <form id="productUpdate_form" action="/admin/productUpdate" method="post">
-        <input type="hidden" name="page" value="${page }">
-        <div class="wrap_num">
-          <span>상품 번호 : ${product.productNo }</span>
-          <input type="hidden" name="productNo" value="${product.productNo }">
-        </div>
-        <div class="wrap_name">
-          <span>상품명</span>
-          <input type="text" name="productName" value="${product.productName }">
-        </div>
-        <div class="wrap_category">
-          <span>카테고리</span>
-            <select name="productCategory">
-              <option value="none" selected>=== 선택 ===</option>
-              <option value="FINE FRAGRANCES">FINE FRAGRANCES</option>
-              <option value="HOME CREATIONS">HOME CREATIONS</option>
-              <option value="BODY - HAIR - FACE">BODY - HAIR - FACE</option>
-              <option value="GROOMING">GROOMING</option>
-            </select>
-        </div>
-        <div class="wrap_price">
-          <span>가격</span>
-          <input type="number" name="productPrice" value="${product.productPrice }"> 원
-        </div>
-        <div class="wrap_amount">
-          <span>수량</span>
-          <input type="number" name="productAmount" value="${product.productAmount }"> 개
-        </div>
-        <div>
-          <fmt:formatDate value="${product.productRegDate }" 
-            pattern="yyyy년MM월dd일 HH시mm분ss초" var="productRegDate"/>
-          <span>작성일 : ${productRegDate }</span>
-        </div>
-        <div class="wrap_prointro">
-          <span>상품 소개</span><br>
-          <textarea rows="20" cols="40" style="resize: none;" name="productIntro">${product.productIntro }</textarea>
-        </div>
-        <div>
-          <input type="submit" class="btn_update" value="수정">
-          <a href="productDetail?productNo=${product.productNo }&page=${pageMaker.criteria.page}"><input type="button" value="취소"></a>
-        </div>
-      </form>
-    </div>
-  </div> --%>
-  
    <div class="wrapper">
     <div class="wrap">
       <form id="productUpdate_form" action="/admin/productUpdate" method="post" enctype="multipart/form-data">
@@ -88,19 +40,21 @@
             <div class="product_name">
               <h3>${product.productName }</h3>
             </div>
-            
-            
-            <div class="col-12">
-              <label for="productImg" class="form-label">상품 이미지</label>
-              <input type="file" id="productImg" name="file" />
-              <div class="input-group has-validation select_img">
-                <img width="50%" src="/resources${product.productImg }">
-                <input type="hidden" name="productImg" value="${product.productImg }" />
+
+
+              <div class="form_section">
+                <div class="form_section_title">
+                  <label>상품 이미지</label>
+                </div>
+                <div class="form_section_content">
+                  <input type="file" id="fileItem" name='uploadFile'
+                    style="height: 30px;">
+                  <div id="uploadResult"></div>
+                </div>
               </div>
-            </div>
-            
-      
-            <div class="col-12">
+
+
+              <div class="col-12">
               <label for="productNo" class="form-label">상품 번호</label>
               <div class="input-group has-validation">
                 <input class="form-control" id="productNo" value="${product.productNo }" readonly="readonly" name="productNo">
@@ -156,17 +110,146 @@
 
 <script type="text/javascript">
 
-/* 이미지 관련 start */
-$("#product_img").change(function(){
-if(this.files && this.files[0]) {
- var reader = new FileReader;
- reader.onload = function(data) {
-  $(".select_img img").attr("src", data.target.result).width(500);        
- }
- reader.readAsDataURL(this.files[0]);
-}
+$(document).ready(function(){
+   
+    /* 기존 이미지 출력 */
+	let productNo = '<c:out value="${product.productNo}"/>';
+	let uploadResult = $("#uploadResult");
+	
+	$.getJSON("/product/getAttachList", {productNo : productNo}, function(arr){
+		
+		console.log(arr);
+		
+		if(arr.length === 0){
+			
+			
+			let str = "";
+			str += "<div id='result_card'>";
+			str += "<img src='/resources/imgs/noimg.png'>";
+			str += "</div>";
+			
+			uploadResult.html(str);				
+			return;
+		}
+		
+		let str = "";
+		let obj = arr[0];
+		
+		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+		str += "<div id='result_card'";
+		str += "data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "'";
+		str += ">";
+		str += "<img src='/product/display?fileName=" + fileCallPath +"'>";
+		str += "<div class='imgDeleteBtn' data-file='" + fileCallPath + "'>x</div>";
+		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";				
+		str += "</div>";
+		
+		uploadResult.html(str);			
+		
+	});// GetJSON
+    
+	/* 이미지 삭제 버튼 동작 */
+	$("#uploadResult").on("click", ".imgDeleteBtn", function(e){
+		
+		deleteFile();
+		
+	});
+	
+	/* 파일 삭제 메서드 */
+	function deleteFile(){
+		
+		$("#result_card").remove();
+	}
+	
+	/* 이미지 업로드 */
+	$("input[type='file']").on("change", function(e){
+		
+		/* 이미지 존재시 삭제 */
+		if($("#result_card").length > 0){
+			deleteFile();
+		}
+				
+		let formData = new FormData();
+		let fileInput = $('input[name="uploadFile"]');
+		let fileList = fileInput[0].files;
+		let fileObj = fileList[0];
+		
+		if(!fileCheck(fileObj.name, fileObj.size)){
+			return false;
+		}
+		
+		formData.append("uploadFile", fileObj);
+		
+		$.ajax({
+			url: '/admin/uploadAjaxAction',
+	    	processData : false,
+	    	contentType : false,
+	    	data : formData,
+	    	type : 'POST',
+	    	dataType : 'json',
+	    	success : function(result){
+	    		console.log(result);
+	    		showUploadImage(result);
+	    	},
+	    	error : function(result){
+	    		alert("이미지 파일이 아닙니다.");
+	    	}
+		});		
+
+		
+	});
+		
+	/* var, method related with attachFile */
+	let regex = new RegExp("(.*?)\.(jpg|png)$");
+	let maxSize = 1048576; //1MB	
+	
+	function fileCheck(fileName, fileSize){
+
+		if(fileSize >= maxSize){
+			alert("파일 사이즈 초과");
+			return false;
+		}
+			  
+		if(!regex.test(fileName)){
+			alert("해당 종류의 파일은 업로드할 수 없습니다.");
+			return false;
+		}
+		
+		return true;		
+		
+	}
+	
+	/* 이미지 출력 */
+	function showUploadImage(uploadResultArr){
+		
+		/* 전달받은 데이터 검증 */
+		if(!uploadResultArr || uploadResultArr.length == 0){return}
+		
+		let uploadResult = $("#uploadResult");
+		
+		let obj = uploadResultArr[0];
+		
+		let str = "";
+		
+		let fileCallPath = encodeURIComponent(obj.uploadPath.replace(/\\/g, '/') + "/s_" + obj.uuid + "_" + obj.fileName);
+		//replace 적용 하지 않아도 가능
+		//let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+		
+		str += "<div id='result_card'>";
+		str += "<img src='/product/display?fileName=" + fileCallPath +"'>";
+		str += "<div class='imgDeleteBtn' data-file='" + fileCallPath + "'>x</div>";
+		str += "<input type='hidden' name='imageList[0].fileName' value='"+ obj.fileName +"'>";
+		str += "<input type='hidden' name='imageList[0].uuid' value='"+ obj.uuid +"'>";
+		str += "<input type='hidden' name='imageList[0].uploadPath' value='"+ obj.uploadPath +"'>";		
+		str += "</div>";		
+		
+   		uploadResult.append(str);     
+        
+	}
+   
 });
-/* End */
 
 </script>
 

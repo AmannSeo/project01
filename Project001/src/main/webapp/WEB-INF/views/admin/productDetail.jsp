@@ -48,7 +48,14 @@
   background-color: red !important;
   border-color: red !important;
 }
-
+#result_card img{
+    max-width: 100%;
+      height: auto;
+      display: block;
+      padding: 5px;
+      margin-top: 10px;
+      margin: auto; 
+}
 </style>
 
 <title>${product.productName }</title>
@@ -68,15 +75,18 @@
           <div class="prodcut_name">
             <h3>${product.productName }</h3>
           </div>
-    
-          <div class="col-12">
-            <label for="productImg" class="form-label">상품 이미지</label>
-            <div class="input-group has-validation">
-              <img width="50%" src="/resources${product.productImg }">
+
+            <div class="col-12 form_section">
+              <div class="form_section_title">
+                <label>상품 이미지</label>
+              </div>
+              <div class="form_section_content">
+
+                <div id="uploadResult"></div>
+              </div>
             </div>
-          </div>
-          
-          <div class="col-12">
+
+            <div class="col-12">
             <label for="productNo" class="form-label">상품 번호</label>
             <div class="input-group has-validation">
               <input class="form-control" id="productNo" value="${product.productNo }" readonly="readonly">
@@ -130,7 +140,47 @@
 </div>
 
 
+<script type="text/javascript">
 
+$(document).ready(function(){
+   
+    /* 이미지 정보 호출 */
+    let productNo = '<c:out value="${product.productNo }"/>';
+    let uploadResult = $("#uploadResult");
+    
+    $.getJSON("/product/getAttachList", {productNo : productNo}, function(arr){	
+		
+        if(arr.length === 0){		
+            
+            let str = "";
+			str += "<div id='result_card'>";
+			str += "<img src='/resources/imgs/noimg.png'>";
+			str += "</div>";
+			
+			uploadResult.html(str);
+            
+			return;
+		}
+        
+		let str = "";
+		let obj = arr[0];	
+		
+		let fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+		str += "<div id='result_card'";
+		str += "data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid + "' data-filename='" + obj.fileName + "'";
+		str += ">";
+		str += "<img src='/product/display?fileName=" + fileCallPath +"'>";
+		str += "</div>";		
+		
+		uploadResult.html(str);						
+		
+	});
+    
+    
+   
+});
+
+</script>
 
 </body>
 <!-- footer -->

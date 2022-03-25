@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +18,11 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.spring.p01.domain.AttachImageVO;
 import edu.spring.p01.domain.ProductVO;
 import edu.spring.p01.pageutil.PageCriteria;
 import edu.spring.p01.pageutil.PageMaker;
+import edu.spring.p01.persistence.AttachDAO;
 import edu.spring.p01.service.AdminService;
 import edu.spring.p01.service.ProductService;
 
@@ -34,6 +37,9 @@ public class ProductController {
 	
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	private AttachDAO attachDao;
 	
 	@GetMapping("/index")
 	public void indexGET(Model model, Integer page, Integer numsPerPage, String keyword) throws Exception {
@@ -73,6 +79,15 @@ public class ProductController {
 		model.addAttribute("pageMaker", pageMaker);
 	}
 	
+	/* 이미지 정보 반환 */
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<List<AttachImageVO>> getAttachList(int productNo){
+		
+		logger.info("getAttachList() Call............." + productNo);
+		
+		return new ResponseEntity<List<AttachImageVO>>(attachDao.getAttachList(productNo), HttpStatus.OK);
+	}
+	
 	/* 이미지 출력 */
 	@GetMapping("/display")
 	public ResponseEntity<byte[]> getImage(String fileName){
@@ -99,6 +114,7 @@ public class ProductController {
 		
 	}
 	
+	/* 상품 상세 */
 	@GetMapping("/detail")
 	public void detailGET(Model model, Integer productNo, Integer page) throws Exception {
 		logger.info("detailGET() Call : productNo : " + productNo);

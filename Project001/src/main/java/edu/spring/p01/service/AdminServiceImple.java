@@ -78,10 +78,24 @@ public class AdminServiceImple implements AdminService{
 	}
 
 	// 상품 수정
+	@Transactional
 	@Override
 	public int update(ProductVO product) {
 		logger.info("update() Call : product = " + product.toString());
-		return adminDao.update(product);
+//		return adminDao.update(product);
+		
+		int result = adminDao.update(product);
+		
+		if(result == 1 && product.getImageList() != null && product.getImageList().size() > 0) {
+			adminDao.deleteImageAll(product.getProductNo());
+			
+			product.getImageList().forEach(attach -> {
+				attach.setProductNo(product.getProductNo());
+				adminDao.imageEnroll(attach);
+			});
+		}
+		return result;
+		
 	}
 
 	// 상품 삭제

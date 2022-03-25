@@ -339,29 +339,10 @@ public class AdminController {
 
 	// 상품 정보 수정 POST
 	@PostMapping("/productUpdate")
-	public String productUpdatePOST(ProductVO product, Integer page, MultipartFile file, HttpServletRequest req)
+	public String productUpdatePOST(ProductVO product, Integer productNo)
 			throws Exception {
 		logger.info("productUpdatePOST() Call");
 		logger.info("(Post)product No : " + product);
-
-		/*
-		 * // 새로운 파일이 등록되었는지 확인 if (file.getOriginalFilename() != null &&
-		 * file.getOriginalFilename() != "") { // 기존 파일을 삭제 new File(uploadPath +
-		 * req.getParameter("productImg")).delete();
-		 * 
-		 * // 새로 첨부한 파일을 등록 String imgUploadPath = uploadPath + File.separator +
-		 * "imgUpload"; String ymdPath = UploadFileUtils.calcPath(imgUploadPath); String
-		 * fileName = UploadFileUtils.fileUpload(imgUploadPath,
-		 * file.getOriginalFilename(), file.getBytes(), ymdPath);
-		 * 
-		 * product.setProductImg(File.separator + "imgUpload" + ymdPath + File.separator
-		 * + fileName);
-		 * 
-		 * } else { // 새로운 파일이 등록되지 않았다면 // 기존 이미지를 그대로 사용
-		 * product.setProductImg(req.getParameter("productImg"));
-		 * 
-		 * }
-		 */
 
 		int result = adminService.update(product);
 		if (result == 1) {

@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			${cateCode} = #{cateCode},
 			${productPrice} = #{productPrice},
 			${productAmount} = #{productAmount},
-			${productIntro} = #{productIntro},
+			${productIntro} = #{productIntro}
 		where ${productNo} = #{productNo}
 	</update>
 	
@@ -61,6 +61,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="imageEnroll">
 		insert into pro01_image(product_no, fileName, uploadPath, uuid) values (#{productNo}, #{fileName}, #{uploadPath}, #{uuid})
 	</insert>
+	
+	<!-- 지정 상품 이미지 전체 삭제 -->
+	<delete id="deleteImageAll">
+		delete from pro01_image where product_no = #{productNo}
+	</delete>
 	
 	<!-- 상품 리스트 불러오기 -->
 	<select id="product_select_all" resultType="productVO">  

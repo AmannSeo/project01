@@ -1,4 +1,4 @@
-package edu.spring.p01.persistence;
+package edu.spring.p01.mapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,28 +7,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import edu.spring.p01.domain.AttachImageVO;
+import edu.spring.p01.persistence.AttachDAO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/spring/**/*.xml"})
 @WebAppConfiguration
-public class AdminDaoTest {
+public class AttachMapperTest {
 
 	@Autowired
-	private AdminDAO dao;
+	private AttachDAO dao;
 	
-	/*
-	 * @Test public void imageEnrollTest() { AttachImageVO vo = new AttachImageVO();
-	 * 
-	 * vo.setProductNo(107); vo.setFileName("test1");
-	 * vo.setUploadPath("test Path1"); vo.setUuid("test uuid1");
-	 * 
-	 * dao.imageEnroll(vo); }
-	 */
-	
+	/* 이미지 정보 반환 */
 	@Test
-	public void deleteImageAllTest() {
-		int productNo = 113;
-		dao.deleteImageAll(productNo);
+	public void getAttachListTest() {
+		int porductNo =  113;
+		
+		System.out.println("이미지 정보 : " + dao.getAttachList(porductNo));
 	}
 }

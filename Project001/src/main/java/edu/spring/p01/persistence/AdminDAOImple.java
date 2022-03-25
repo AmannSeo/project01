@@ -109,6 +109,12 @@ public class AdminDAOImple implements AdminDAO{
 		return sqlSession.insert(NAMESPACE + ".imageEnroll", vo);
 	}
 
+	@Override
+	public int deleteImageAll(int productNo) {
+		logger.info("deleteImageAll() Call.............");
+		return sqlSession.delete(NAMESPACE + ".deleteImageAll", productNo);
+	}
+
 	
 
 

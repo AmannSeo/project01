@@ -41,6 +41,7 @@ public interface AdminDAO {
 	/* 이미지 등록 */
 	public int imageEnroll(AttachImageVO vo);
 	
-	
+	/* 지정 상품 이미지 전체 삭제 */
+	public int deleteImageAll(int productNo);
 
 }
