@@ -10,10 +10,9 @@ public class testBatch {
 	private static final Logger logger =
 			LoggerFactory.getLogger(testBatch.class);
 	
-	@Scheduled(cron = "0 * * * * *")
-	public void testMethod() throws Exception{
-		logger.info("배치 실행 테스트...............");
-		logger.info("----------------------------");
-	}
-
+	/*
+	 * @Scheduled(cron = "0 * * * * *") public void testMethod() throws Exception{
+	 * logger.info("배치 실행 테스트...............");
+	 * logger.info("----------------------------"); }
+	 */
 }

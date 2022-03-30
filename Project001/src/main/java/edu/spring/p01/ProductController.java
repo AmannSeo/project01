@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.spring.p01.domain.AttachImageVO;
+import edu.spring.p01.domain.PageDTO;
 import edu.spring.p01.domain.ProductVO;
 import edu.spring.p01.pageutil.PageCriteria;
 import edu.spring.p01.pageutil.PageMaker;
@@ -131,6 +132,31 @@ public class ProductController {
 	@GetMapping("/order")
 	public void orderGET() {
 		logger.info("orderGET() Call");
+	}
+	
+	/* 상품 검색 */
+	@GetMapping("search")
+	public String searchProductGet(PageCriteria cir, Model model) {
+		
+		logger.info("searchProductGet() Call >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		
+		List<ProductVO> list = productService.getProductList(cir);
+		
+		logger.info("pre list : " + list);
+		logger.info("==========================================================");
+		if (!list.isEmpty()) {
+			model.addAttribute("list", list);
+			logger.info("list : " + list);
+			logger.info("==========================================================");
+		} else {
+			model.addAttribute("listCheck", "empty");
+			
+			return "search";
+		}
+		
+		model.addAttribute("pageMaker", new PageDTO(cir, productService.productGetTotal(cir)));
+		
+		return "search";
 	}
 
 }

@@ -34,7 +34,7 @@ public class ProductDAOImple implements ProductDAO{
 	@Override
 	public int productGetTotal(PageCriteria criteria) {
 		logger.info("productGetTotal() Call");
-		return sqlSession.selectOne(NAMESPACE + ".productGetTotal");
+		return sqlSession.selectOne(NAMESPACE + ".productGetTotal", criteria);
 	}
 
 	// 카테고리별 상품 리스트

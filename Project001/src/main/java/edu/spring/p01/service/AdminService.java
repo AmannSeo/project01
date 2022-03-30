@@ -2,6 +2,7 @@ package edu.spring.p01.service;
 
 import java.util.List;
 
+import edu.spring.p01.domain.AttachImageVO;
 import edu.spring.p01.domain.CateVO;
 import edu.spring.p01.domain.ProductVO;
 import edu.spring.p01.pageutil.PageCriteria;
@@ -31,6 +32,9 @@ public interface AdminService {
 	
 	// 카테고리 리스트
 	List<CateVO> cateList();
+	
+	// 지정 상품 이미지 정보 얻기
+	public List<AttachImageVO> getAttachInfo(int productNo);
 	
 
 }

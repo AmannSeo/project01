@@ -23,14 +23,14 @@ public class ProductServiceImple implements ProductService{
 	// 상품 검색(상품명)
 	@Override
 	public List<ProductVO> getProductList(PageCriteria criteria) {
-		logger.info("getProductList() Call");
+		logger.info("getProductList() Call >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		return dao.getProductList(criteria);
 	}
 	
 	// 상품 총 갯수
 	@Override
 	public int productGetTotal(PageCriteria criteria) {
-		logger.info("productGetTotal() Call");
+		logger.info("productGetTotal() Call >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		return dao.productGetTotal(criteria);
 	}
 

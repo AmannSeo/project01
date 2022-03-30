@@ -22,13 +22,10 @@ public class PageCriteria {
 	// 검색 키워드
 	private String keyword; 
 	
-	// 상품 리스트
-	private String[] productArr;
-	
 	// 카테고리 코드
 	private String cateCode;
 	
-	
+	// PageCriteria 기본 생성자
 	public PageCriteria() {
 		this.page = 1;
 		this.numsPerPage = 8;
@@ -88,13 +85,6 @@ public class PageCriteria {
 		this.keyword = keyword;
 	}
 	
-	public String[] getProductArr() {
-		return productArr;
-	}
-
-	public void setProductArr(String[] productArr) {
-		this.productArr = productArr;
-	}
 	
 	public String getCateCode() {
 		return cateCode;
@@ -118,7 +108,7 @@ public class PageCriteria {
 	@Override
 	public String toString() {
 		return "PageCriteria [page=" + page + ", numsPerPage=" + numsPerPage + ", type=" + type
-				+ ", keyword=" + keyword + ", productArr=" + Arrays.toString(productArr) + ", cateCode=" + cateCode + "]";
+				+ ", keyword=" + keyword + ", cateCode=" + cateCode + "]";
 	}
 
 	

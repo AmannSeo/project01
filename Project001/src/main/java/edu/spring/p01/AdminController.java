@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,13 +63,14 @@ public class AdminController {
 	// 관리자 페이지 이동
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public void adminPageGET() {
-		logger.info("adminPageGET() Call");
+		logger.info("adminPageGET() Call >>>>>>>>>>>>>>>>>>>>>>>>>>");
+		logger.info("................................................");
 	}
 
 	// 상품 등록 페이지 이동
 	@GetMapping(value = "/productReg")
 	public void productRegGET(Model model) throws Exception {
-		logger.info("productRegGET() Call");
+		logger.info("productRegGET() Call >>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
 		// ObjectMapper 클래스를 인스턴스화 하여 사용
 		// 인스턴스화 : 클래스 내의 객체에 대한 특정한 변형을 정의하고
@@ -88,7 +91,10 @@ public class AdminController {
 		model.addAttribute("cateList", cateList);
 
 		logger.info("변경 전 >> " + list);
+		logger.info("................................................");
+		
 		logger.info("변경 후 >> " + cateList);
+		logger.info("................................................");
 	}
 
 	/* 첨부 파일 업로드 */
@@ -96,6 +102,7 @@ public class AdminController {
 	public ResponseEntity<List<AttachImageVO>> uploadAjaxActionPOST(MultipartFile[] uploadFile) {
 
 		logger.info("uploadAjaxActionPOST..........");
+		logger.info("................................................");
 		
 		/* 이미지 파일 체크 */
 		/* MIME TYPE 체크 */
@@ -232,6 +239,7 @@ public class AdminController {
 	@PostMapping("/deleteFile")
 	public ResponseEntity<String> deleteFile(String fileName) {
 		logger.info("deleteFile() Call..............");
+		logger.info("................................................");
 		
 		File file = null;
 		
@@ -246,6 +254,7 @@ public class AdminController {
 			String originFileName = file.getAbsolutePath().replace("s_", "");
 			
 			logger.info("originFileName : " + originFileName);
+			logger.info("................................................");
 			
 			file = new File(originFileName);
 			
@@ -269,7 +278,8 @@ public class AdminController {
 		// - 재경로 위치에 속성값을 전송하는 객체
 		logger.info("productRegPOST() Call................." + product);
 		logger.info("product : " + product.toString());
-
+		logger.info("................................................");
+		
 		adminService.insert(product);
 		
 		reAttr.addFlashAttribute("product_result", product.getProductName());
@@ -282,9 +292,11 @@ public class AdminController {
 	// 검색 키워드를 보내주고 받아와야 함. jsp에서 보내준 데이터를 못 받으며 검색이 되지 않음
 	@GetMapping(value = "/productList")
 	public void productListGET(Model model, Integer page, Integer numsPerPage, String keyword) throws Exception {
-		logger.info("productListGET() Call");
+		logger.info("productListGET() Call....................................");
 		logger.info("page = " + page + ", numsPerPage = " + numsPerPage);
 		logger.info("keyword : " + keyword);
+		logger.info("................................................");
+		
 		// Paging
 		PageCriteria criteria = new PageCriteria();
 		if (page != null) {
@@ -312,6 +324,8 @@ public class AdminController {
 		pageMaker.setTotalCount(adminService.getTotalNumsOfRecords(criteria));
 		pageMaker.setPageData();
 		logger.info("getTotalNumsOfRecords : " + adminService.getTotalNumsOfRecords(criteria));
+		logger.info("................................................");
+		
 		model.addAttribute("pageMaker", pageMaker);
 	}
 
@@ -319,6 +333,8 @@ public class AdminController {
 	@GetMapping("/productDetail")
 	public void productDetail(Model model, Integer productNo, Integer page) {
 		logger.info("productDetail() Call : productNo : " + productNo);
+		logger.info("................................................");
+		
 		ProductVO product = adminService.read(productNo);
 
 		// 상품 정보
@@ -331,8 +347,10 @@ public class AdminController {
 	// 상품 정보 수정 GET
 	@GetMapping("/productUpdate")
 	public void productUpdateGET(Model model, Integer productNo) {
-		logger.info("productUpdateGET() Call");
+		logger.info("productUpdateGET() Call >>>>>>>>>>>>>>>>>>>>>");
 		logger.info("(Get)product No : " + productNo);
+		logger.info("................................................");
+		
 		ProductVO product = adminService.read(productNo);
 		model.addAttribute("product", product);
 	}
@@ -343,7 +361,8 @@ public class AdminController {
 			throws Exception {
 		logger.info("productUpdatePOST() Call");
 		logger.info("(Post)product No : " + product);
-
+		logger.info("................................................");
+		
 		int result = adminService.update(product);
 		if (result == 1) {
 			logger.info("product update success");
@@ -358,9 +377,36 @@ public class AdminController {
 	// 상품 삭제
 	@GetMapping("/productDelete")
 	public String productDeleteGET(Integer productNo) {
-		logger.info("delete() Call");
+		logger.info("delete() Call................................");
 		logger.info("delete product No : " + productNo);
+		logger.info("................................................");
+		
+		List<AttachImageVO> fileList = adminService.getAttachInfo(productNo);
+		
+		if(fileList != null) {
+			
+			List<Path> pathList = new ArrayList();
+			
+			fileList.forEach(vo ->{
+				
+				// 원본 이미지
+				Path path = Paths.get("C:\\upload", vo.getUploadPath(), vo.getUuid() + "_" + vo.getFileName());
+				pathList.add(path);
+				
+				// 섬네일 이미지
+				path = Paths.get("C:\\upload", vo.getUploadPath(), "s_" + vo.getUuid()+"_" + vo.getFileName());
+				pathList.add(path);
+				
+			});
+			
+			pathList.forEach(path ->{
+				path.toFile().delete();
+			});
+			
+		}
+		
 		int result = adminService.delete(productNo);
+		
 		if (result == 1) {
 			logger.info("delete Success");
 			return "redirect:/admin/productList";

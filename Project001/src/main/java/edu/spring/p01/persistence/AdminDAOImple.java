@@ -109,10 +109,25 @@ public class AdminDAOImple implements AdminDAO{
 		return sqlSession.insert(NAMESPACE + ".imageEnroll", vo);
 	}
 
+	/* 지정 상품 이미지 전체 삭제 */
 	@Override
 	public int deleteImageAll(int productNo) {
 		logger.info("deleteImageAll() Call.............");
 		return sqlSession.delete(NAMESPACE + ".deleteImageAll", productNo);
+	}
+
+	/* 어제자 날짜 이미지 리스트 */
+	@Override
+	public List<AttachImageVO> checkFileList() {
+		logger.info("checkFileList() Call...............");
+		return sqlSession.selectList(NAMESPACE + ".checkFileList");
+	}
+
+	/* 지정 상품 이미지 정보 얻기 */
+	@Override
+	public List<AttachImageVO> getAttchInfo(int productNo) {
+		logger.info("getAttchInfo() Call ...............");
+		return sqlSession.selectList(NAMESPACE + ".getAttchInfo", productNo);
 	}
 
 	

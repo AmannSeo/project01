@@ -20,14 +20,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&family=Teko:wght@300&display=swap');
 .nav li a {
   font-family: 'Source Sans Pro', sans-serif;
-  padding-right : 1rem !important;
-  padding-left : 1rem !important;
+  padding-right : 0.5rem !important;
+  padding-left : 0.5rem !important;
   font-size: 16px;
-  letter-spacing: 0.5px;
+  /* letter-spacing: 0.5px; */
 }
 
 .img_logo {
-  width: 200px;
+  width: 11em;
 }
 .nav_wrapper {
   padding-top: 1.5rem !important;

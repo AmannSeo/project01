@@ -58,6 +58,24 @@
   color:white;
   border-color: white;
 }
+#btn_join{
+  color: black;
+  border-color: white;
+  background-color: white;
+  opacity: 80%;
+}
+#btn_join:hover{
+  color: black;
+  border-color: white;
+  background-color: white;
+  opacity: 100%;
+}
+#btn_join:active{
+  color: black;
+  border-color: white;
+  background-color: white;
+  opacity: 100%;
+}
 
 
 </style>
@@ -69,7 +87,7 @@
       </a>
 
       <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-        <li><a href="/product/index" class="nav-link px-2 menu_channel">PRODUCTS</a></li>
+        <!-- <li><a href="/product/index" class="nav-link px-2 menu_channel">PRODUCTS</a></li> -->
         <li class="nav-item dropdown">
           <a href="/fine-fragrances" class="nav-link px-2 dropdown-toggle menu_channel" data-bs-toggle="dropdown" aria-expanded="false">FINE FRAGRANCES</a>
           <ul class="dropdown-menu" aria-labelledby="dropdown04">
@@ -83,7 +101,14 @@
         <li><a href="/help" class="nav-link px-2 menu_channel">FAQ</a></li>
       </ul>
       
-      
+      <div class="search_wrap">
+          <form id="searchForm" action="/search" method="get">
+            <div class="search_input">
+              <input type="text" name="keyword">
+                <button class='btn search_btn'>검 색</button>                       
+            </div>
+          </form>
+        </div>
       
 
       <div class="login_wrap">

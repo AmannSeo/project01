@@ -37,7 +37,7 @@
     
        
     
-    <div class="album py-5 bg-light">
+    <%-- <div class="album py-5 bg-light">
     <div class="container" style="display: flow-root;">
     <c:forEach var="list" items="${list }">
         <div class="col product_card">
@@ -57,7 +57,11 @@
       </div>
     </c:forEach>
     </div>
-  </div>
+  </div> --%>
+  
+  <h1>Searching</h1>
+  <div>${list }</div>
+  <div>${pageMaker }</div>
     
 </body>
 <!-- footer -->

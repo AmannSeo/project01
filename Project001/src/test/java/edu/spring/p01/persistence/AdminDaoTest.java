@@ -1,5 +1,7 @@
 package edu.spring.p01.persistence;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,11 @@ public class AdminDaoTest {
 	 */
 	
 	@Test
-	public void deleteImageAllTest() {
-		int productNo = 113;
-		dao.deleteImageAll(productNo);
+	public void getAttachInfoTest() {
+		int productNo = 2;
+		
+		List<AttachImageVO> list = dao.getAttchInfo(productNo);
+		
+		System.out.println("list : " + list);
 	}
 }

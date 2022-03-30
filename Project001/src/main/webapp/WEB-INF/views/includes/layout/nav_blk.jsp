@@ -53,7 +53,24 @@
   color:black; 
   border-color: black;
 }
-
+#btn_join{
+  color: white;
+  border-color: gray;
+  background-color: gray;
+  opacity: 80%;
+}
+#btn_join:hover{
+  color: white;
+  border-color: gray;
+  background-color: gray;
+  opacity: 100%;
+}
+#btn_join:active{
+  color: white;
+  border-color: gray;
+  background-color: gray;
+  opacity: 100%;
+}
 
 </style>
 
@@ -64,13 +81,22 @@
       </a>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="/product/index" class="nav-link px-2 link-dark">PRODUCTS</a></li>
+          <!-- <li><a href="/product/index" class="nav-link px-2 link-dark">PRODUCTS</a></li> -->
           <li><a href="/fine-fragrances" class="nav-link px-2 link-dark">FINE FRAGRANCES</a></li>
           <li><a href="#" class="nav-link px-2 link-dark">HOME CREATIONS</a></li>
           <li><a href="#" class="nav-link px-2 link-dark">BODY - HAIR - FACE</a></li>
           <li><a href="#" class="nav-link px-2 link-dark">ABOUT US</a></li>
           <li><a href="/help" class="nav-link px-2 link-dark">FAQ</a></li>
         </ul>
+        
+        <div class="search_wrap">
+          <form id="searchForm" action="/search" method="get">
+            <div class="search_input">
+              <input type="text" name="keyword">
+                <button class='btn search_btn'>검 색</button>                       
+            </div>
+          </form>
+        </div>
   
       <div class="login_wrap">
         <div class="not_login_part">
