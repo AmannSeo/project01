@@ -3,27 +3,23 @@ package edu.spring.p01;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.spring.p01.domain.MemberVO;
-import edu.spring.p01.domain.ProductVO;
 import edu.spring.p01.service.MemberService;
-import edu.spring.p01.service.ProductService;
-import oracle.jdbc.proxy.annotation.Post;
 
 @Controller
 @RequestMapping(value = "/member")
@@ -37,8 +33,8 @@ public class MemberController {
 	@Autowired
 	private JavaMailSender mailSender;
 	
-
-	// 회원가입 페이지 이동
+	
+	
 	@RequestMapping(value = "/join", method = RequestMethod.GET)
 	public void joinGET() {
 		logger.info("joinGET() Call");
@@ -55,7 +51,18 @@ public class MemberController {
 		
 		logger.info("insert success");
 		
+		/*
+		 * String rawPw = ""; // 인코딩 전 비밀번호 String encodePw = ""; // 인코딩 후 비밀번호
+		 * 
+		 * rawPw = vo.getMemberPw(); // 비밀번호 데이터 얻음 encodePw = pwEncoder.encode(rawPw);
+		 * // 비밀번호 인코딩 vo.setMemberPw(encodePw); // 인코딩 된 비밀번호 vo객체에 다시 저장
+		 */		
+		/* 회원가입 쿼리 실행 */
+		memberService.insert(vo);
+		
+		
 		return "redirect:/main";
+	
 	}
 	
 	// 마이페이지 이동
