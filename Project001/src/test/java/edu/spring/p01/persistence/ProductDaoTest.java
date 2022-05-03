@@ -29,32 +29,28 @@ public class ProductDaoTest {
 	 * dao.imageEnroll(vo); }
 	 */
 	
-	@Test
-	public void getGoodsListTest() {
-		
-		PageCriteria cri = new PageCriteria();
-		String type = "T";
-		String keyword = "THE";
-		String catecode = "";
-		
-		System.out.println("=================================");
-		
-		cri.setType(type);
-		cri.setKeyword(keyword);
-		cri.setCateCode(catecode);
-		List<ProductVO> list = dao.getProductList(cri);
-		
-		System.out.println("=================================");
-		System.out.println("cri : " + cri);
-		System.out.println("list : " + list);
-
-	}
+	/*
+	 * @Test public void getGoodsListTest() {
+	 * 
+	 * PageCriteria cri = new PageCriteria(); String type = "T"; // String keyword =
+	 * "THE"; String keyword = "없음"; String catecode = "";
+	 * 
+	 * System.out.println("=================================");
+	 * 
+	 * cri.setType(type); cri.setKeyword(keyword); cri.setCateCode(catecode);
+	 * List<ProductVO> list = dao.getProductList(cri);
+	 * 
+	 * System.out.println("=================================");
+	 * System.out.println("cri : " + cri); System.out.println("list : " + list);
+	 * 
+	 * }
+	 */
 
 	@Test
 	public void getGoodsListTest2() {
 		
 		PageCriteria cri = new PageCriteria();
-		String type = "C";
+		String type = "TC";
 		String keyword = "";
 		String catecode = "101001";
 		
@@ -70,4 +66,5 @@ public class ProductDaoTest {
 		System.out.println("list : " + list);
 		
 	}
+	
 }
